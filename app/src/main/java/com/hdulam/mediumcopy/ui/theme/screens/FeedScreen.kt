@@ -60,7 +60,7 @@ fun FeedScreen(
         matchesSearch && matchesShortRead && matchesTab
     } //se guardara dependiendo si esta o no activado el solo lecturas cortas y si se relleno el buscar por titulo o autor
     val resultCountArticles = filteredArticles.size
-    var applauseCount by remember {
+    var applauseCount by rememberSaveable {
         mutableStateOf(0)
     }
     Column(
