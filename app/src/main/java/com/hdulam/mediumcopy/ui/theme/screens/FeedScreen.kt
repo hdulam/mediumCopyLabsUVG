@@ -18,6 +18,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.Switch
 import androidx.compose.material3.TextButton
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -59,7 +60,9 @@ fun FeedScreen(
         matchesSearch && matchesShortRead && matchesTab
     } //se guardara dependiendo si esta o no activado el solo lecturas cortas y si se relleno el buscar por titulo o autor
     val resultCountArticles = filteredArticles.size
-    var applauseCount = 0
+    var applauseCount by remember {
+        mutableStateOf(0)
+    }
     Column(
         modifier = modifier
     ) {
