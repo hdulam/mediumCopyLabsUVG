@@ -23,7 +23,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
-@Preview(showSystemUi = true)
 @Composable
 fun FeedScreen(
     modifier: Modifier = Modifier
@@ -58,90 +57,133 @@ fun FeedScreen(
             }
 
         matchesSearch && matchesShortRead && matchesTab
+
     } //se guardara dependiendo si esta o no activado el solo lecturas cortas y si se relleno el buscar por titulo o autor
+
     val resultCountArticles = filteredArticles.size
     var applauseCount by rememberSaveable {
         mutableStateOf(0)
     }
-    Column(
+
+    FeedContent(
+        visibleArticles = filteredArticles,
+        searchQuery = searchQuery,
+        onSearchQueryChange = { searchQuery = it },
+        showShortReadsOnly = showShortReadsOnly,
+        onShortReadsOnlyChange = { showShortReadsOnly = it },
+        selectedTab = selectedTab,
+        onTabSelected = { selectedTab = it },
+        applauseCount = applauseCount,
+        onApplaud = { applauseCount++ },
         modifier = modifier
-    ) {
-        Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-            Text(
-                text = "Para ti",
-                modifier = Modifier.clickable {
-                    selectedTab = "Para ti"
-                },
-                fontWeight = if (selectedTab == "Para ti") {
-                    FontWeight.Bold
-                } else {
-                    FontWeight.Normal
-                }
-            )
-            Text(
-                text = "Siguiendo",
-                modifier = Modifier.clickable {
-                    selectedTab = "Siguiendo"
-                },
-                fontWeight = if (selectedTab == "Siguiendo") {
-                    FontWeight.Bold
-                } else {
-                    FontWeight.Normal
-                }
-            )
-            Text(
-                text = "Destacados",
-                modifier = Modifier.clickable {
-                    selectedTab = "Destacados"
-                },
-                fontWeight = if (selectedTab == "Destacados") {
-                    FontWeight.Bold
-                } else {
-                    FontWeight.Normal
-                }
-            )
+    )
+    }
+
+@Composable
+fun FeedContent(
+    visibleArticles: List<Article>,
+    searchQuery: String,
+    onSearchQueryChange: (String) -> Unit,
+    showShortReadsOnly: Boolean,
+    onShortReadsOnlyChange: (Boolean) -> Unit,
+    selectedTab: String,
+    onTabSelected: (String) -> Unit,
+    applauseCount: Int,
+    onApplaud: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(modifier = modifier){
+    Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+        Text(
+            text = "Para ti",
+            modifier = Modifier.clickable {
+                onTabSelected("Para ti")
+            },
+            fontWeight = if (selectedTab == "Para ti") {
+                FontWeight.Bold
+            } else {
+                FontWeight.Normal
+            }
+        )
+        Text(
+            text = "Siguiendo",
+            modifier = Modifier.clickable {
+                onTabSelected("Siguiendo")
+            },
+            fontWeight = if (selectedTab == "Siguiendo") {
+                FontWeight.Bold
+            } else {
+                FontWeight.Normal
+            }
+        )
+        Text(
+            text = "Destacados",
+            modifier = Modifier.clickable {
+                onTabSelected("Destacados")
+            },
+            fontWeight = if (selectedTab == "Destacados") {
+                FontWeight.Bold
+            } else {
+                FontWeight.Normal
+            }
+        )
         }
         OutlinedTextField(
             value = searchQuery,
-            onValueChange = { newText ->
-                searchQuery = newText
-            },
-            label = {
-                Text("Buscar por título o autor")
-            }
+            onValueChange = onSearchQueryChange,
+            label = { Text("Buscar por título o autor") }
         )
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Switch(
                 checked = showShortReadsOnly,
-                onCheckedChange = { newValue ->
-                    showShortReadsOnly = newValue
-                }
+                onCheckedChange = onShortReadsOnlyChange
             )
 
             Text("Solo lecturas cortas")
         }
-        Text(
-            text = if (resultCountArticles == 1) {
-                "$resultCountArticles resultado"
-            } else {
-                "$resultCountArticles resultados"
-            }
-        )
-        TextButton(
-            onClick = {
-                applauseCount++
-            }
-        ) {
-            Text(
-                text = "Aplaudir · $applauseCount"
-            )
-        }
-        filteredArticles.forEachIndexed { index, article ->
-            MediumArticle(
-                article
-            )
-        }
+    Text(
+        text = if (visibleArticles.size == 1) "${visibleArticles.size} resultado"
+        else "${visibleArticles.size} resultados"
+    )
+    TextButton(onClick = onApplaud) {
+        Text(text = "Aplaudir · $applauseCount")
     }
+    visibleArticles.forEachIndexed { index, article ->
+        MediumArticle(article)
+    }
+}
+    }
+
+@Preview(showBackground = true)
+@Composable
+fun FeedContentWithResultsPreview() {
+    FeedContent(
+        visibleArticles = ArticleRepository.getList(),
+        searchQuery = "ajedrez",
+        onSearchQueryChange = {},
+        showShortReadsOnly = false,
+        onShortReadsOnlyChange = {},
+        selectedTab = "Para ti",
+        onTabSelected = {},
+        applauseCount = 3,
+        onApplaud = {}
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun FeedContentEmptyPreview() {
+    FeedContent(
+        visibleArticles = emptyList(),
+        searchQuery = "nada nada nada",
+        onSearchQueryChange = {},
+        showShortReadsOnly = false,
+        onShortReadsOnlyChange = {},
+        selectedTab = "Para ti",
+        onTabSelected = {},
+        applauseCount = 0,
+        onApplaud = {}
+    )
 }
