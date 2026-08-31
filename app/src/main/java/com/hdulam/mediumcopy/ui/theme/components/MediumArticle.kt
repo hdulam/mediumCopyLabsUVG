@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
@@ -30,7 +29,6 @@ fun MediumArticle(
         modifier = modifier
     ) {
         Column(
-            modifier = Modifier.weight(2f),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Row(
@@ -61,12 +59,6 @@ fun MediumArticle(
                 text = ("${article.readTime} min de lectura · ${article.date}")
             )
         }
-        Box(
-            modifier = Modifier
-                .weight(1f)
-                .aspectRatio(1f)
-                .background(Color.LightGray)
-        )
     }
 }
 
@@ -78,45 +70,37 @@ fun MediumArticlePreview(){
     val resume = "Tres decisiones de arranque que nadie revisa hasta que ya es tarde."
     val readTime = "5"
     val date = "12 dic"
-
     Row() {
-            Column(
-                modifier = Modifier.weight(2f),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+        Column(
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                Box(
+                    modifier = Modifier
+                        .size(20.dp)
+                        .clip(CircleShape)
+                        .background(Color.Red)
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .size(20.dp)
-                            .clip(CircleShape)
-                            .background(Color.Red)
-                    ) {
-                    }
-                    Text(
-                        text = name,
-                        color = Gray
-                    )
                 }
                 Text(
-                    text = title,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = resume
-                )
-                Text(
-                    text = ("${readTime} min de lectura · ${date}")
+                    text = name,
+                    color = Gray
                 )
             }
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .aspectRatio(1f)
-                    .background(Color.LightGray)
+            Text(
+                text = title,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                text = resume
+            )
+            Text(
+                text = ("$readTime min de lectura · $date")
             )
         }
     }
+}

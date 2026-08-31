@@ -5,7 +5,5 @@ data class Article(
     val resume: String,
     val date: String,
     val readTime: String,
-    val title: String,
-    val isAuthorFollowed: Boolean,
-    val isFeatured: Boolean
+    val title: String
 )
